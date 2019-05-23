@@ -1,0 +1,120 @@
+<div class="container">
+
+	<div class="row mt-5">
+		<div class="col-5">
+			<form (ngSubmit)="onCreateProductList()">
+				<h4>Create a new product list</h4>
+				<div class="row">
+					<div class="col-10">
+						<mat-form-field class="w-100">
+							<input matInput placeholder="Product list name" [(ngModel)]="productListForm.name"
+							       name="name">
+						</mat-form-field>
+					</div>
+					<div class="col-2">
+						<button mat-raised-button color="primary" class="float-right">Create</button>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="col-7">
+			<form (ngSubmit)="onCreateProduct()">
+				<h4>Add a new product to the list</h4>
+				<div class="row">
+					<div class="col-5">
+						<mat-form-field class="w-100">
+							<input [disabled]="productForm.productList == null" matInput placeholder="Product name"
+							       [(ngModel)]="productForm.name" name="name">
+						</mat-form-field>
+					</div>
+					<div class="col-5">
+						<mat-form-field class="w-100">
+							<input [disabled]="productForm.productList == null" matInput type="number"
+							       placeholder="Product amount"
+							       [(ngModel)]="productForm.amount"
+							       name="name">
+						</mat-form-field>
+					</div>
+					<div class="col-2">
+						<button [disabled]="productForm.productList == null" mat-raised-button color="primary"
+						        class="float-right">Add
+						</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<div class="row mt-5">
+		<div class="col-12">
+			<h4>Select a product list</h4>
+			<mat-form-field>
+				<mat-label>Select an option</mat-label>
+				<mat-select [(value)]="selectedProductList" (valueChange)="selectedProductListChange($event)">
+					<mat-option *ngFor="let list of productLists" [value]="list">{{ list.name }}</mat-option>
+				</mat-select>
+			</mat-form-field>
+		</div>
+	</div>
+
+	<div class="row mt-5">
+		<div class="col">
+
+			<mat-form-field>
+				<input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+			</mat-form-field>
+
+			<table mat-table [dataSource]="dataSource" multiTemplateDataRows matSort class="mat-elevation-z8">
+
+				<ng-container matColumnDef="{{column}}" *ngFor="let column of columnsToDisplay">
+					<th mat-header-cell *matHeaderCellDef mat-sort-header> {{column}} </th>
+					<td mat-cell *matCellDef="let element"> {{element[column]}} </td>
+				</ng-container>
+
+				<!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+				<ng-container matColumnDef="expandedDetail">
+					<td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length">
+						<div class="example-element-detail mt-2 mb-2"
+						     [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+							<div class="row w-100">
+								<div class="col-4">
+									<mat-form-field class="w-100">
+										<input matInput placeholder="Product name" [(ngModel)]="element.name"
+										       name="name">
+									</mat-form-field>
+								</div>
+								<div class="col-4">
+									<mat-form-field class="w-100">
+										<input matInput type="number" placeholder="Product amount"
+										       [(ngModel)]="element.amount" name="amount">
+									</mat-form-field>
+								</div>
+								<div class="col-2">
+									<button mat-raised-button color="primary" class="float-right"
+									        (click)="updateProduct(element)">Update
+									</button>
+								</div>
+								<div class="col-2">
+									<button mat-raised-button color="primary" class="float-right"
+									        (click)="deleteProduct(element)">Delete
+									</button>
+								</div>
+							</div>
+						</div>
+					</td>
+				</ng-container>
+
+				<tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+				<tr mat-row *matRowDef="let element; columns: columnsToDisplay;"
+				    class="example-element-row"
+				    [class.example-expanded-row]="expandedElement === element"
+				    (click)="expandedElement = expandedElement === element ? null : element">
+				</tr>
+				<tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+			</table>
+
+			<mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+		</div>
+	</div>
+
+</div>

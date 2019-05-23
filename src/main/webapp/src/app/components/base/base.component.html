@@ -1,0 +1,12 @@
+<mat-tab-group mat-align-tabs="center" [(selectedIndex)]="this.selectedIndex">
+	<mat-tab label="User">
+		<ng-template matTabContent>
+			<app-user></app-user>
+		</ng-template>
+	</mat-tab>
+	<mat-tab label="Product list" [disabled]="!authenticationService.isLoggedIn()">
+		<ng-template matTabContent>
+			<app-product-list></app-product-list>
+		</ng-template>
+	</mat-tab>
+</mat-tab-group>
